@@ -1,19 +1,18 @@
 import { Router } from 'express';
-const router = Router();
+import { UserController } from '../controllers';
 
-router.route('/users').get((req, res, next) => {});
+const router: Router = Router();
+const userController: UserController = new UserController();
+
+router.get('/users/all', userController.getAll);
+
+router.post('/users/create', userController.create);
+router.get('/users/profile');
 
 router
 	.route('/users/:userId')
-	.get(async (req, res, next) => {
-		try {
-			res.send(`Param id:${req.params.userId}`);
-		} catch (err) {
-			next(err);
-		}
-	})
-	.post()
-	.put()
-	.delete();
+	.get(userController.getWithId)
+	.put(userController.updateWithId)
+	.delete(userController.deleteWithId);
 
 export default router;
