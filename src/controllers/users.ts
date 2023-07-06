@@ -3,7 +3,8 @@ import { IUser, User } from '../models';
 
 export class UserController {
 	public async getAll(req: Request, res: Response): Promise<void> {
-		res.send('hello');
+		if (!req.user) res.json('no');
+		else res.json('hello');
 	}
 
 	public async create(req: Request, res: Response): Promise<void> {

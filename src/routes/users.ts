@@ -2,15 +2,15 @@ import { Router } from 'express';
 import { UserController } from '../controllers';
 
 const router: Router = Router();
-const userController: UserController = new UserController();
+const userController = new UserController();
 
-router.get('/users/all', userController.getAll);
+router.get('/all', userController.getAll);
 
-router.post('/users/create', userController.create);
-router.get('/users/profile');
+router.post('/create', userController.create);
+router.get('/profile');
 
 router
-	.route('/users/:userId')
+	.route('/:userId')
 	.get(userController.getWithId)
 	.put(userController.updateWithId)
 	.delete(userController.deleteWithId);
