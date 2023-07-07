@@ -5,6 +5,7 @@ import passport from './utils/passport';
 import routes from './routes';
 import 'dotenv/config';
 import cors from 'cors';
+import { spotifyApiWrapper } from './utils/spotify/api-wrapper';
 const app = express();
 
 declare global {
@@ -38,4 +39,7 @@ app.use('/api/auth', routes.auth);
 app.get('/', (req, res) => {
 	res.send('Hello World!');
 });
-app.listen(process.env.PORT, () => console.log('listening!'));
+app.listen(process.env.PORT, async () => {
+	await spotifyApiWrapper.setToken();
+	setInterval(spotifyApiWrapper.setToken.bind(spotifyApiWrapper), 3600 * 1000);
+});
