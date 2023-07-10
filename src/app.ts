@@ -39,6 +39,7 @@ app.use('/api/auth', routes.auth);
 app.get('/', (req, res) => {
 	res.send('Hello World!');
 });
+
 app.listen(process.env.PORT, async () => {
 	await spotifyApiWrapper.setToken();
 	setInterval(spotifyApiWrapper.setToken.bind(spotifyApiWrapper), 3600 * 1000);

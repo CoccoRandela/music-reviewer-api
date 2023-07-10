@@ -1,11 +1,18 @@
+import { URLSearchParams } from 'url';
+import { IAccessToken, ISearchRequest, ISearchResponse } from './types';
+
 class SpotifyApiWrapper {
-	private _token: string;
+	private _token: IAccessToken;
 	public get token() {
 		return this._token;
 	}
 
-	public constructor(token?: string) {
-		this._token = token || '';
+	public constructor(token?: IAccessToken) {
+		this._token = token || {
+			access_token: '',
+			token_type: '',
+			expires_in: 0,
+		};
 	}
 
 	public async setToken() {
@@ -13,7 +20,7 @@ class SpotifyApiWrapper {
 		console.log(this._token);
 	}
 
-	public async requestToken(): Promise<string> {
+	public async requestToken(): Promise<IAccessToken> {
 		const response = await fetch('https://accounts.spotify.com/api/token', {
 			method: 'POST',
 			headers: {
@@ -25,8 +32,25 @@ class SpotifyApiWrapper {
 			},
 			body: 'grant_type=client_credentials',
 		});
+		return await response.json();
+	}
+
+	public async search(search: ISearchRequest): Promise<ISearchResponse> {
+		const searchParams = new URLSearchParams({
+			q: search.q,
+			type: search.type,
+		});
+		const response = await fetch(
+			'https://api.spotify.com/v1/search?' + searchParams,
+			{
+				method: 'GET',
+				headers: {
+					Authorization: `Bearer ${this._token.access_token}`,
+				},
+			}
+		);
 		const data = await response.json();
-		return data.access_token;
+		return data;
 	}
 }
 
