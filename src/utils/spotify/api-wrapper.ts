@@ -1,5 +1,13 @@
 import { URLSearchParams } from 'url';
-import { IAccessToken, ISearchRequest, ISearchResponse } from './types';
+import {
+	Album,
+	Artist,
+	IAccessToken,
+	IAlbumRequest,
+	IPagination,
+	ISearchRequest,
+	SearchResponse,
+} from './types';
 
 class SpotifyApiWrapper {
 	private _token: IAccessToken;
@@ -7,17 +15,22 @@ class SpotifyApiWrapper {
 		return this._token;
 	}
 
+	private _authHeaders: { Authorization: string };
+
 	public constructor(token?: IAccessToken) {
 		this._token = token || {
 			access_token: '',
 			token_type: '',
 			expires_in: 0,
 		};
+		this._authHeaders = { Authorization: '' };
 	}
 
 	public async setToken() {
 		this._token = await this.requestToken();
-		console.log(this._token);
+		this._authHeaders = {
+			Authorization: `Bearer ${this._token.access_token}`,
+		};
 	}
 
 	public async requestToken(): Promise<IAccessToken> {
@@ -35,22 +48,55 @@ class SpotifyApiWrapper {
 		return await response.json();
 	}
 
-	public async search(search: ISearchRequest): Promise<ISearchResponse> {
+	public async search(request: ISearchRequest): Promise<SearchResponse> {
 		const searchParams = new URLSearchParams({
-			q: search.q,
-			type: search.type,
+			q: request.q,
+			type: request.type,
 		});
 		const response = await fetch(
 			'https://api.spotify.com/v1/search?' + searchParams,
 			{
 				method: 'GET',
-				headers: {
-					Authorization: `Bearer ${this._token.access_token}`,
-				},
+				headers: this._authHeaders,
 			}
 		);
-		const data = await response.json();
-		return data;
+		return await response.json();
+	}
+
+	public async getArtistbyId(id: string): Promise<Artist> {
+		const response = await fetch(`https://api.spotify.com/v1/artists/${id}`, {
+			method: 'GET',
+			headers: this._authHeaders,
+		});
+		return await response.json();
+	}
+
+	public async getArtistAlbums(id: string): Promise<IPagination<Album>> {
+		const searchParams = new URLSearchParams({
+			include_groups: 'album,compilation',
+		});
+		const response = await fetch(
+			`https://api.spotify.com/v1/artists/${id}/albums?` + searchParams,
+			{
+				method: 'GET',
+				headers: this._authHeaders,
+			}
+		);
+		return await response.json();
+	}
+
+	public async getAlbumById(request: IAlbumRequest): Promise<Album> {
+		const searchParams = new URLSearchParams({
+			market: request.market,
+		});
+		const response = await fetch(
+			`https://api.spotify.com/v1/albums/${request.id}` + searchParams,
+			{
+				method: 'GET',
+				headers: this._authHeaders,
+			}
+		);
+		return await response.json();
 	}
 }
 

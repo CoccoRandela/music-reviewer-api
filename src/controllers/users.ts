@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { IUser, User } from '../models';
+import { parse } from 'qs';
 
 export class UserController {
 	public async getAll(req: Request, res: Response): Promise<void> {
@@ -43,5 +44,24 @@ export class UserController {
 		const data = req.body;
 		const updatedUser = await User.findByIdAndDelete(id, data);
 		res.json(updatedUser);
+	}
+
+	public async searchByUsername(req: Request, res: Response) {
+		const query = req.query.username;
+
+		const result = await User.aggregate([
+			{
+				$search: {
+					index: 'searchByUsername',
+					autocomplete: {
+						query: query,
+						path: 'username',
+						tokenOrder: 'any',
+						fuzzy: {},
+					},
+				},
+			},
+		]);
+		res.json(result);
 	}
 }

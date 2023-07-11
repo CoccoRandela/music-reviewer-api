@@ -19,9 +19,24 @@ interface IRestrictions {
 	reason: 'market' | 'product' | 'explicit';
 }
 
-type SearchType = 'artist' | 'album';
+interface IPagination<IItemsType> {
+	href: string;
+	limit: number;
+	next: string;
+	offset: number;
+	previous: string;
+	total: number;
+	items: IItemsType[];
+}
 
-type IAlbum = {
+// album types
+
+interface IAlbumRequest {
+	id: string;
+	market: string;
+}
+
+type Album = {
 	album_type: string;
 	total_tracks: number;
 	available_markets: string[];
@@ -46,7 +61,7 @@ type IAlbum = {
 	genres?: string[];
 	label?: string;
 	popularity?: number;
-	artists: IArtist[];
+	artists: Artist[];
 } & (
 	| {
 			album_group?: string;
@@ -65,7 +80,7 @@ type IAlbum = {
 );
 
 interface ITrack {
-	artist: IArtist[];
+	artist: Artist[];
 	available_markets: string[];
 	disc_number: number;
 	duration_ms: number;
@@ -94,7 +109,9 @@ interface ITrack {
 	is_local: boolean;
 }
 
-type IArtist = {
+// artist types
+
+type Artist = {
 	externalUrls: {
 		spotify: string;
 	};
@@ -119,31 +136,32 @@ type IArtist = {
 
 // search types
 
+type SearchType = 'artist' | 'album';
+
 interface ISearchRequest {
 	q: string;
 	type: SearchType[];
 }
 
-interface ISearchPagination<IItemsType> {
-	href: string;
-	limit: number;
-	next: string;
-	offset: number;
-	previous: string;
-	total: number;
-	items: IItemsType[];
+interface IAlbumSearchResponse {
+	albums: IPagination<Album>;
 }
 
-interface ISearchAlbumResponse {
-	albums: ISearchPagination<IAlbum>;
+interface IArtistResponse {
+	artists: IPagination<Artist>;
 }
+type SearchResponse =
+	| IAlbumSearchResponse
+	| IArtistResponse
+	| (IArtistResponse & IAlbumSearchResponse);
 
-interface ISearchAlbumResponse {
-	artists: ISearchPagination<IArtist>;
-}
-type ISearchResponse =
-	| ISearchAlbumResponse
-	| ISearchAlbumResponse
-	| (ISearchAlbumResponse & ISearchAlbumResponse);
-
-export { IAccessToken, ISearchResponse, ISearchRequest };
+export {
+	IAccessToken,
+	SearchResponse,
+	ISearchRequest,
+	Album,
+	IAlbumRequest,
+	Artist,
+	IAlbumSearchResponse,
+	IPagination,
+};

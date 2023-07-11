@@ -10,6 +10,7 @@ interface IUser {
 	age: number;
 	email: string;
 	password: string;
+	country: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -26,6 +27,8 @@ const userSchema = new Schema<IUser>({
 	email: String,
 	password: String,
 });
+
+userSchema.index({ username: 'text' });
 
 const User = model('User', userSchema);
 

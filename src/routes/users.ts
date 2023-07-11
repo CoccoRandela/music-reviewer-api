@@ -9,6 +9,8 @@ router.get('/all', userController.getAll);
 router.post('/create', userController.create);
 router.get('/profile');
 
+router.get('/search', userController.searchByUsername);
+
 router
 	.route('/:userId')
 	.get(userController.getWithId)
