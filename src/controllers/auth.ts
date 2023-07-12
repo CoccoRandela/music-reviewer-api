@@ -29,4 +29,12 @@ export class AuthController {
 			res.json({ message: 'user logged out' });
 		});
 	}
+
+	public checkAuthentication(req: Request, res: Response, next: NextFunction) {
+		if (req.isAuthenticated()) {
+			next();
+		} else {
+			next(new Error('user not authenticated'));
+		}
+	}
 }

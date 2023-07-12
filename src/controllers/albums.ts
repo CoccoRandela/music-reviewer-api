@@ -10,10 +10,4 @@ export class AlbumController {
 		const album = await spotifyApiWrapper.getAlbumById(id);
 		res.json(album);
 	}
-
-	public async getReviews(req: Request, res: Response) {
-		const albumId = req.params.albumId;
-		const reviews = await Review.where('albumId').equals(albumId).exec();
-		res.json(reviews);
-	}
 }

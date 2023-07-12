@@ -1,23 +1,26 @@
 import { Router } from 'express';
-import { UserController, ReviewController } from '../controllers';
+import {
+	UserController,
+	ReviewController,
+	AuthController,
+} from '../controllers';
 
 const router: Router = Router();
 const userController = new UserController();
 const reviewController = new ReviewController();
+const authController = new AuthController();
 
 router.get('/all', userController.getAll);
 
-router.post('/create', userController.create);
-
-router.get('/profile');
+router
+	.route('/me')
+	.all(authController.checkAuthentication)
+	.post(userController.update)
+	.delete(userController.delete);
 
 router.get('/search', userController.searchByUsername);
 
-router
-	.route('/:userId')
-	.get(userController.getWithId)
-	.put(userController.updateWithId)
-	.delete(userController.deleteWithId);
+router.get(':userId', userController.getWithId);
 
 router.get('/:userId/reviews', reviewController.getForUser);
 

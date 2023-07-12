@@ -1,15 +1,13 @@
 import { Request, Response } from 'express';
 import { IUser, User } from '../models';
-import { parse } from 'qs';
-import { Review } from '../models/review';
 
 export class UserController {
-	public async getAll(req: Request, res: Response): Promise<void> {
+	public async getAll(req: Request, res: Response) {
 		if (!req.user) res.json('no');
 		else res.json('hello');
 	}
 
-	public async create(req: Request, res: Response): Promise<void> {
+	public async create(req: Request, res: Response) {
 		const data = req.body;
 		const newUser = new User({
 			username: data.username,
@@ -27,24 +25,24 @@ export class UserController {
 		res.json(newUser);
 	}
 
-	public async getWithId(req: Request, res: Response): Promise<void> {
-		const id = req.params.userId;
-		const user = await User.findById(id);
-		res.json(user);
-	}
-
-	public async updateWithId(req: Request, res: Response): Promise<void> {
-		const id = req.params.userId;
+	public async update(req: Request, res: Response) {
+		const id = req.user;
 		const data = req.body;
 		const updatedUser = await User.findByIdAndUpdate(id, data, { new: true });
 		res.json(updatedUser);
 	}
 
-	public async deleteWithId(req: Request, res: Response): Promise<void> {
-		const id = req.params.userId;
+	public async delete(req: Request, res: Response) {
+		const id = req.user;
 		const data = req.body;
 		const updatedUser = await User.findByIdAndDelete(id, data);
 		res.json(updatedUser);
+	}
+
+	public async getWithId(req: Request, res: Response) {
+		const id = req.params.userId;
+		const user = await User.findById(id);
+		res.json(user);
 	}
 
 	public async searchByUsername(req: Request, res: Response) {
