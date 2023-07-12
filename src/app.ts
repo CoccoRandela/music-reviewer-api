@@ -12,6 +12,7 @@ declare global {
 	namespace Express {
 		interface User {
 			_id?: Types.ObjectId;
+			country: string;
 		}
 	}
 }
@@ -35,6 +36,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/users', routes.users);
 app.use('/api/auth', routes.auth);
+app.use('/api/artists', routes.artists);
+app.use('/api/albums', routes.albums);
 
 app.get('/', (req, res) => {
 	res.send('Hello World!');

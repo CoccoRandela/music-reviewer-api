@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { User } from '../../models';
+import { IUser, User } from '../../models';
 
 const serializeUser = (
 	user: Express.User,

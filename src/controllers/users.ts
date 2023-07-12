@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { IUser, User } from '../models';
 import { parse } from 'qs';
+import { Review } from '../models/review';
 
 export class UserController {
 	public async getAll(req: Request, res: Response): Promise<void> {
@@ -20,7 +21,7 @@ export class UserController {
 			age: data.age,
 			email: data.email,
 			password: data.password,
-			friends: [],
+			country: data.country,
 		});
 		await newUser.save();
 		res.json(newUser);

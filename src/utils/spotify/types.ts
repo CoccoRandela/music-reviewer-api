@@ -31,11 +31,6 @@ interface IPagination<IItemsType> {
 
 // album types
 
-interface IAlbumRequest {
-	id: string;
-	market: string;
-}
-
 type Album = {
 	album_type: string;
 	total_tracks: number;
@@ -160,7 +155,6 @@ export {
 	SearchResponse,
 	ISearchRequest,
 	Album,
-	IAlbumRequest,
 	Artist,
 	IAlbumSearchResponse,
 	IPagination,

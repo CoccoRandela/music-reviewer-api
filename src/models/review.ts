@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 interface IReview {
 	userId: Schema.Types.ObjectId;
@@ -19,8 +19,8 @@ const reviewSchema = new Schema<IReview>({
 	score: {
 		type: Number,
 		required: true,
-		min: 1,
-		max: 10,
+		min: 10,
+		max: 100,
 	},
 	text: {
 		type: String,
@@ -28,3 +28,7 @@ const reviewSchema = new Schema<IReview>({
 		maxlength: 1000,
 	},
 });
+
+const Review = model('Review', reviewSchema);
+
+export { Review, IReview };

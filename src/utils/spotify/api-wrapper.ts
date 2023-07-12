@@ -3,7 +3,6 @@ import {
 	Album,
 	Artist,
 	IAccessToken,
-	IAlbumRequest,
 	IPagination,
 	ISearchRequest,
 	SearchResponse,
@@ -85,17 +84,11 @@ class SpotifyApiWrapper {
 		return await response.json();
 	}
 
-	public async getAlbumById(request: IAlbumRequest): Promise<Album> {
-		const searchParams = new URLSearchParams({
-			market: request.market,
+	public async getAlbumById(id: string): Promise<Album> {
+		const response = await fetch(`https://api.spotify.com/v1/albums/${id}`, {
+			method: 'GET',
+			headers: this._authHeaders,
 		});
-		const response = await fetch(
-			`https://api.spotify.com/v1/albums/${request.id}` + searchParams,
-			{
-				method: 'GET',
-				headers: this._authHeaders,
-			}
-		);
 		return await response.json();
 	}
 }

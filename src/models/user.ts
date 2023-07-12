@@ -26,6 +26,7 @@ const userSchema = new Schema<IUser>({
 	},
 	email: String,
 	password: String,
+	country: String,
 });
 
 userSchema.index({ username: 'text' });
