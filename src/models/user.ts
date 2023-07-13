@@ -1,35 +1,46 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 
 interface IUser {
 	username: string;
-	profilePictureUrl: string;
-	name: {
-		first: string;
-		last: string;
-	};
-	age: number;
 	email: string;
 	password: string;
+	profilePictureUrl: string;
 	country: string;
+	following: Types.ObjectId[];
+	followers: Types.ObjectId[];
 }
 
-const userSchema = new Schema<IUser>({
-	username: String,
-	profilePictureUrl: String,
-	name: {
-		first: String,
-		last: String,
+const userSchema = new Schema<IUser>(
+	{
+		username: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		email: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		password: {
+			type: String,
+			required: true,
+		},
+		profilePictureUrl: {
+			type: String,
+			required: true,
+		},
+		country: {
+			type: String,
+			required: true,
+		},
+		following: [Schema.Types.ObjectId],
+		followers: [Schema.Types.ObjectId],
 	},
-	age: {
-		type: Number,
-		min: 18,
-	},
-	email: String,
-	password: String,
-	country: String,
-});
-
-userSchema.index({ username: 'text' });
+	{
+		timestamps: true,
+	}
+);
 
 const User = model('User', userSchema);
 

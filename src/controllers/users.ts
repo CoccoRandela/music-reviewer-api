@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { IUser, User } from '../models';
 
 export class UserController {
@@ -7,22 +7,21 @@ export class UserController {
 		else res.json('hello');
 	}
 
-	public async create(req: Request, res: Response) {
-		const data = req.body;
-		const newUser = new User({
-			username: data.username,
-			profilePictureUrl: data.profilePictureUrl,
-			name: {
-				first: data.name.first,
-				last: data.name.last,
-			},
-			age: data.age,
-			email: data.email,
-			password: data.password,
-			country: data.country,
-		});
-		await newUser.save();
-		res.json(newUser);
+	public async create(req: Request, res: Response, next: NextFunction) {
+		try {
+			const data = req.body;
+			const newUser = new User({
+				username: data.username,
+				email: data.email,
+				password: data.password,
+				country: data.country,
+			});
+			newUser.profilePictureUrl = `${newUser._id}.jpg`;
+			await newUser.save();
+			return newUser;
+		} catch (err) {
+			next(err);
+		}
 	}
 
 	public async update(req: Request, res: Response) {
@@ -43,6 +42,24 @@ export class UserController {
 		const id = req.params.userId;
 		const user = await User.findById(id);
 		res.json(user);
+	}
+
+	public async follow(req: Request, res: Response) {
+		const followedUserId = req.params.userId;
+		const followingUserId = req.user?._id;
+		const updatedFollowedUser = await User.findByIdAndUpdate(
+			followedUserId,
+			{
+				$push: { followers: followingUserId },
+			},
+			{ new: true }
+		);
+		const updatedFollowingUser = await User.findByIdAndUpdate(
+			followingUserId,
+			{ $push: { following: followedUserId } },
+			{ new: true }
+		);
+		res.json({ updatedFollowedUser, updatedFollowingUser });
 	}
 
 	public async searchByUsername(req: Request, res: Response) {

@@ -1,7 +1,19 @@
 import { NextFunction, Request, Response } from 'express';
 import passport from '../utils/passport';
+import { UserController } from './users';
+const userController = new UserController();
 
 export class AuthController {
+	public async signup(req: Request, res: Response, next: NextFunction) {
+		const user = await userController.create(req, res, next);
+		if (!user) next(new Error('Error'));
+		else {
+			req.login(user, () => {
+				res.status(200).json(user);
+			});
+		}
+	}
+
 	public login(req: Request, res: Response) {
 		passport.authenticate(
 			'local',

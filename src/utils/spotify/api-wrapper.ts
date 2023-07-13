@@ -10,9 +10,6 @@ import {
 
 class SpotifyApiWrapper {
 	private _token: IAccessToken;
-	public get token() {
-		return this._token;
-	}
 
 	private _authHeaders: { Authorization: string };
 

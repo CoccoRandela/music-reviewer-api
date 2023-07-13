@@ -1,7 +1,7 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 
 interface IReview {
-	userId: Schema.Types.ObjectId;
+	userId: Types.ObjectId;
 	albumId: string;
 	score: number;
 	text?: string;

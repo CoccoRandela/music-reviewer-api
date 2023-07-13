@@ -23,5 +23,6 @@ router.get('/search', userController.searchByUsername);
 router.get(':userId', userController.getWithId);
 
 router.get('/:userId/reviews', reviewController.getForUser);
+router.post('/:userId/follow', userController.follow);
 
 export default router;
