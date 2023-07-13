@@ -5,7 +5,7 @@ const userController = new UserController();
 
 export class AuthController {
 	public async signup(req: Request, res: Response, next: NextFunction) {
-		const user = await userController.create(req, res, next);
+		const user = await userController.create(req, next);
 		if (!user) next(new Error('Error'));
 		else {
 			req.login(user, () => {

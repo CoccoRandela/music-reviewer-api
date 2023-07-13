@@ -10,8 +10,6 @@ const userController = new UserController();
 const reviewController = new ReviewController();
 const authController = new AuthController();
 
-router.get('/all', userController.getAll);
-
 router
 	.route('/me')
 	.all(authController.checkAuthentication)
@@ -23,6 +21,16 @@ router.get('/search', userController.searchByUsername);
 router.get(':userId', userController.getWithId);
 
 router.get('/:userId/reviews', reviewController.getForUser);
-router.post('/:userId/follow', userController.follow);
+
+router.post(
+	'/:userId/follow',
+	authController.checkAuthentication,
+	userController.follow
+);
+router.post(
+	'/:userId/unfollow',
+	authController.checkAuthentication,
+	userController.unfollow
+);
 
 export default router;
