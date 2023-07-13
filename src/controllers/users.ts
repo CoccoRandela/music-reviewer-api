@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { IUser, User } from '../models';
+import { ReviewController } from './reviews';
+import { IReview } from '../models/review';
+const reviewController = new ReviewController();
 
 export class UserController {
-	public async create(
-		req: Request<{}, {}, IUser>,
-		next: NextFunction
-	): Promise<IUser | void> {
+	public async create(data: IUser): Promise<IUser> {
 		try {
-			const data = req.body;
 			const newUser = new User({
 				username: data.username,
 				email: data.email,
@@ -15,10 +14,10 @@ export class UserController {
 				country: data.country,
 			});
 			newUser.profilePictureUrl = `${newUser._id}.jpg`;
-			await newUser.save();
-			return newUser;
+			const savedUser = await newUser.save();
+			return savedUser;
 		} catch (err) {
-			next(err);
+			throw err;
 		}
 	}
 
@@ -130,6 +129,20 @@ export class UserController {
 			if (!updatedFollowingUser) {
 				throw new Error('No user found');
 			}
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	public async getReviews(
+		req: Request<{ userId: string }>,
+		res: Response<IReview[]>,
+		next: NextFunction
+	) {
+		const userId = req.params.userId;
+		try {
+			const reviews = await reviewController.getMany('userId', userId);
+			res.json(reviews);
 		} catch (err) {
 			next(err);
 		}

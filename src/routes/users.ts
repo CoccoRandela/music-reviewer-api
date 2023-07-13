@@ -1,13 +1,8 @@
 import { Router } from 'express';
-import {
-	UserController,
-	ReviewController,
-	AuthController,
-} from '../controllers';
+import { UserController, AuthController } from '../controllers';
 
 const router: Router = Router();
 const userController = new UserController();
-const reviewController = new ReviewController();
 const authController = new AuthController();
 
 router
@@ -20,7 +15,7 @@ router.get('/search', userController.searchByUsername);
 
 router.get(':userId', userController.getWithId);
 
-router.get('/:userId/reviews', reviewController.getForUser);
+router.get('/:userId/reviews', userController.getReviews);
 
 router.post(
 	'/:userId/follow',

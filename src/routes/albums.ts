@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import { AlbumController, ReviewController } from '../controllers';
+import { AlbumController, AuthController } from '../controllers';
 
 const router = Router();
-const artistController = new AlbumController();
-const reviewController = new ReviewController();
+const albumController = new AlbumController();
+const authController = new AuthController();
 
-router.get('/:albumId', artistController.getById);
+router.get('/:albumId', albumController.getById);
 router
 	.route('/:albumId/reviews')
-	.get(reviewController.getForAlbum)
-	.post(reviewController.create);
+	.get(albumController.getReviews)
+	.post(authController.checkAuthentication, albumController.addReview);
 
 export default router;
