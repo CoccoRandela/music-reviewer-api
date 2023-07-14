@@ -8,7 +8,7 @@ const authController = new AuthController();
 router
 	.route('/me')
 	.all(authController.checkAuthentication)
-	.post(userController.update)
+	.patch(userController.update)
 	.delete(userController.delete);
 
 router.get('/search', userController.searchByUsername);
@@ -17,12 +17,12 @@ router.get(':userId', userController.getWithId);
 
 router.get('/:userId/reviews', userController.getReviews);
 
-router.post(
+router.patch(
 	'/:userId/follow',
 	authController.checkAuthentication,
 	userController.follow
 );
-router.post(
+router.patch(
 	'/:userId/unfollow',
 	authController.checkAuthentication,
 	userController.unfollow

@@ -36,8 +36,8 @@ const userSchema = new Schema<IUser>(
 			type: String,
 			required: true,
 		},
-		following: [Schema.Types.ObjectId],
-		followers: [Schema.Types.ObjectId],
+		following: [{ type: Schema.Types.ObjectId, ref: 'User', unique: true }],
+		followers: [{ type: Schema.Types.ObjectId, ref: 'User', unique: true }],
 	},
 	{
 		timestamps: true,

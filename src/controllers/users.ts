@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { IUser, User } from '../models';
 import { ReviewController } from './reviews';
 import { IReview } from '../models/review';
+import createHttpError from 'http-errors';
 const reviewController = new ReviewController();
 
 export class UserController {
@@ -27,7 +28,7 @@ export class UserController {
 		try {
 			const updatedUser = await User.findByIdAndUpdate(id, data, { new: true });
 			if (!updatedUser) {
-				throw new Error('User not found');
+				throw createHttpError(404, 'User not found');
 			}
 			res.json(updatedUser);
 		} catch (err) {
@@ -41,7 +42,7 @@ export class UserController {
 		try {
 			const updatedUser = await User.findByIdAndDelete(id, data);
 			if (!updatedUser) {
-				throw new Error('User not found');
+				throw createHttpError(404, 'User not found');
 			}
 			res.json(updatedUser);
 		} catch (err) {

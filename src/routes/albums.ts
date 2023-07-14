@@ -11,4 +11,10 @@ router
 	.get(albumController.getReviews)
 	.post(authController.checkAuthentication, albumController.addReview);
 
+// router.patch(
+// 	'/:albumId/reviews/:reviewId/like',
+// 	authController.checkAuthentication,
+// 	albumController.performLikeAction
+// );
+
 export default router;

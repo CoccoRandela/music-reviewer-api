@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import passport from '../utils/passport';
 import { UserController } from './users';
 import { IUser } from '../models';
-import { HttpError } from 'http-errors';
+import createHttpError, { HttpError } from 'http-errors';
 const userController = new UserController();
 
 export class AuthController {
@@ -15,7 +15,7 @@ export class AuthController {
 		try {
 			const user = await userController.create(data);
 			if (!user) {
-				throw new Error('error in auth');
+				throw createHttpError(500, 'Could not create user');
 			} else {
 				req.login(user, () => {
 					res.status(200).json(user);
@@ -34,15 +34,7 @@ export class AuthController {
 					next(err);
 				}
 				if (!user) {
-					const error: HttpError = {
-						status: 401,
-						statusCode: 401,
-						message: info.message,
-						expose: true,
-						name: 'Unauthorized',
-					};
-					console.log(info);
-					next(error);
+					next(createHttpError(401, info.message));
 				}
 				if (user) {
 					req.login(user, () => {
@@ -66,14 +58,7 @@ export class AuthController {
 		if (req.isAuthenticated()) {
 			next();
 		} else {
-			const error: HttpError = {
-				status: 401,
-				statusCode: 401,
-				message: 'Not Authorized',
-				expose: true,
-				name: 'Unauthorized',
-			};
-			next(error);
+			next(createHttpError(401, 'Not Authorized'));
 		}
 	}
 }

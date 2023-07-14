@@ -40,6 +40,7 @@ app.use('/api/users', routes.users);
 app.use('/api/auth', routes.auth);
 app.use('/api/artists', routes.artists);
 app.use('/api/albums', routes.albums);
+app.use('/api/reviews', routes.reviews);
 
 app.use((req, res, next) => {
 	next(createHttpError(404));
