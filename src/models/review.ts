@@ -5,6 +5,8 @@ interface IReview {
 	albumId: string;
 	score: number;
 	text?: string;
+	likes?: Types.ObjectId[];
+	dislikes?: Types.ObjectId[];
 }
 
 const reviewSchema = new Schema<IReview>(
@@ -12,6 +14,7 @@ const reviewSchema = new Schema<IReview>(
 		userId: {
 			type: Schema.Types.ObjectId,
 			required: true,
+			ref: 'User',
 		},
 		albumId: {
 			type: String,
@@ -28,6 +31,8 @@ const reviewSchema = new Schema<IReview>(
 			minlength: 10,
 			maxlength: 1000,
 		},
+		likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+		dislikes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 	},
 	{
 		timestamps: true,

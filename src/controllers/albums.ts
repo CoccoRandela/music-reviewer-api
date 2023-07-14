@@ -2,13 +2,20 @@ import { NextFunction, Request, Response } from 'express';
 import { spotifyApiWrapper } from '../utils/spotify/api-wrapper';
 import { IReview } from '../models/review';
 import { ReviewController } from './reviews';
+import { Types } from 'mongoose';
+import { AtLeastOnePropertyOf } from '../utils/helperTypes';
+import createHttpError from 'http-errors';
 const reviewController = new ReviewController();
 
 export class AlbumController {
-	public async getById(req: Request, res: Response) {
+	public async getById(req: Request, res: Response, next: NextFunction) {
 		const id = req.params.albumId;
-		const album = await spotifyApiWrapper.getAlbumById(id);
-		res.json(album);
+		try {
+			const album = await spotifyApiWrapper.getAlbumById(id);
+			res.json(album);
+		} catch (err) {
+			next(err);
+		}
 	}
 
 	public async getReviews(
@@ -39,7 +46,8 @@ export class AlbumController {
 	) {
 		const userId = req.user?._id;
 		if (!userId) {
-			throw new Error('No User');
+			next(createHttpError(401, 'Not Authorized'));
+			return;
 		}
 		const reviewData = {
 			albumId: req.params.albumId,
@@ -57,14 +65,4 @@ export class AlbumController {
 			next(err);
 		}
 	}
-
-	public async updateReview(
-		req: Request<
-			{ albumId: string },
-			{},
-			{ [key in keyof 'score' | 'text']: string }
-		>,
-		res: Response<IReview>,
-		next: NextFunction
-	) {}
 }
