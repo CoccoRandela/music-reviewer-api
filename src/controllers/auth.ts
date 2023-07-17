@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import passport from '../utils/passport';
 import { UserController } from './users';
 import { IUser } from '../models';
+import { hash } from 'bcryptjs';
 import createHttpError, { HttpError } from 'http-errors';
 const userController = new UserController();
 
@@ -13,6 +14,7 @@ export class AuthController {
 	) {
 		const data = req.body;
 		try {
+			data.password = await hash(data.password, 10);
 			const user = await userController.create(data);
 			if (!user) {
 				throw createHttpError(500, 'Could not create user');
