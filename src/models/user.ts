@@ -1,3 +1,4 @@
+import { hash } from 'bcryptjs';
 import { Schema, Types, model } from 'mongoose';
 
 interface IUser {
@@ -41,6 +42,15 @@ const userSchema = new Schema<IUser>(
 		timestamps: true,
 	}
 );
+
+userSchema.pre('save', async function () {
+	const userDocument: IUser = this;
+	try {
+		userDocument.password = await hash(userDocument.password, 10);
+	} catch (err) {
+		throw err;
+	}
+});
 
 const User = model('User', userSchema);
 
