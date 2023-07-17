@@ -7,6 +7,7 @@ import 'dotenv/config';
 import cors from 'cors';
 import { spotifyApiWrapper } from './utils/spotify/api-wrapper';
 import createHttpError, { HttpError } from 'http-errors';
+import { MongoServerError } from 'mongodb';
 
 const app = express();
 
@@ -46,9 +47,26 @@ app.use((req, res, next) => {
 	next(createHttpError(404));
 });
 
-app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-	res.status(err.status || 500).json(err.message);
-});
+app.use(
+	(
+		err: HttpError | MongoServerError,
+		req: Request,
+		res: Response,
+		next: NextFunction
+	): void => {
+		if (err.code === 11000) {
+			res
+				.status(422)
+				.json(
+					`${Object.keys(err.keyValue)} ${Object.values(
+						err.keyValue
+					)} already in use.`
+				);
+			return;
+		}
+		res.status(err.status || 500).json(err.message);
+	}
+);
 
 app.get('/', (req, res) => {
 	res.send('Hello World!');

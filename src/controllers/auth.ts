@@ -4,6 +4,7 @@ import { UserController } from './users';
 import { IUser } from '../models';
 import { hash } from 'bcryptjs';
 import createHttpError, { HttpError } from 'http-errors';
+import { MongoServerError } from 'mongodb';
 const userController = new UserController();
 
 export class AuthController {
@@ -23,7 +24,7 @@ export class AuthController {
 					res.status(200).json(user);
 				});
 			}
-		} catch (err) {
+		} catch (err: any) {
 			next(err);
 		}
 	}
