@@ -2,9 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import { spotifyApiWrapper } from '../utils/spotify/api-wrapper';
 import { IReview } from '../models/review';
 import { ReviewController } from './reviews';
-import { Types } from 'mongoose';
-import { AtLeastOnePropertyOf } from '../utils/helperTypes';
-import createHttpError from 'http-errors';
 const reviewController = new ReviewController();
 
 export class AlbumController {
@@ -33,30 +30,12 @@ export class AlbumController {
 	}
 
 	public async addReview(
-		req: Request<
-			{ albumId: string },
-			{},
-			{
-				score: number;
-				text?: string;
-			}
-		>,
-		res: Response<IReview>,
+		req: Request,
+		res: Response<IReview, { reviewData: IReview }>,
 		next: NextFunction
 	) {
-		const userId = req.user?._id;
-		if (!userId) {
-			next(createHttpError(401, 'Not Authorized'));
-			return;
-		}
-		const reviewData = {
-			albumId: req.params.albumId,
-			userId,
-			score: req.body.score,
-			text: req.body.text,
-		};
 		try {
-			const newReview = await reviewController.create(reviewData);
+			const newReview = await reviewController.create(res.locals.reviewData);
 			if (!newReview) {
 				throw new Error('It was not possible to create the review');
 			}
