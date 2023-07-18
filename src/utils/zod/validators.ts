@@ -8,6 +8,8 @@ const validateUserPayload = (
 	next: NextFunction
 ) => {
 	try {
+		// const sanitizedData = sanitize(req.body);
+		console.log(req.body);
 		res.locals.userData = userPayload.parse(req.body);
 		next();
 	} catch (err) {

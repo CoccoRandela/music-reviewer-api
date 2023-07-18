@@ -17,9 +17,8 @@ export class AuthController {
 		>,
 		next: NextFunction
 	) {
-		const data = res.locals.userData;
 		try {
-			const user = await userController.create(data);
+			const user = await userController.create(res.locals.userData);
 			if (!user) {
 				throw createHttpError(500, 'Could not create user');
 			} else {

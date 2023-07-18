@@ -8,6 +8,8 @@ import cors from 'cors';
 import { spotifyApiWrapper } from './utils/spotify/api-wrapper';
 import createHttpError from 'http-errors';
 import { errorHandler } from './utils/errors';
+import { xss } from 'express-xss-sanitizer';
+import mongoSanitize from 'express-mongo-sanitize';
 
 const app = express();
 
@@ -24,8 +26,9 @@ const main = async () => {
 	await mongoose.connect(`${process.env.DB}`);
 };
 main().catch((err) => console.log(err));
-
 app.use(express.json());
+app.use(xss());
+app.use(mongoSanitize());
 app.use(cors());
 if (!process.env.SECRET) throw new Error('No Secret');
 app.use(
