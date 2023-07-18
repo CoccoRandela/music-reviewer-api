@@ -1,9 +1,9 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler } from 'express';
 import { HttpError } from 'http-errors';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
 
-const handleUnauthorized: ErrorRequestHandler = (
+const handleHttpError: ErrorRequestHandler = (
 	err: HttpError,
 	req,
 	res,
@@ -31,4 +31,4 @@ const handleZodError: ErrorRequestHandler = (err: ZodError, req, res, next) => {
 	res.status(422).json(err.flatten().fieldErrors);
 };
 
-export { handleUnauthorized, handleMongoServerError, handleZodError };
+export { handleHttpError, handleMongoServerError, handleZodError };

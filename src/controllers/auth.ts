@@ -8,11 +8,16 @@ const userController = new UserController();
 
 export class AuthController {
 	public async signup(
-		req: Request<{}, {}, IUser>,
-		res: Response,
+		req: Request,
+		res: Response<
+			IUser,
+			{
+				userData: IUser;
+			}
+		>,
 		next: NextFunction
 	) {
-		const data = req.body;
+		const data = res.locals.userData;
 		try {
 			const user = await userController.create(data);
 			if (!user) {

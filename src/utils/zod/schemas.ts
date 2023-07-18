@@ -1,23 +1,25 @@
 import { Types } from 'mongoose';
-import { number, object, string, z } from 'zod';
+import { z } from 'zod';
+const trimString = (u: unknown) => (typeof u === 'string' ? u.trim() : u);
 
-const userPayload = object({
-	username: string().min(5).max(25).trim(),
-	email: string().email().trim(),
-	password: string()
+const userPayload = z.object({
+	username: z.string().trim().min(5).max(25),
+	email: z.string().trim().email(),
+	password: z
+		.string()
+		.trim()
 		.regex(
 			/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])((?=.*\W)|(?=.*_))[A-Za-z\d\S]{12,50}$/,
 			'Password must contain at least 12 characters (max 50), including one uppercase letter, one lowercase letter, one number and one symbol, and must not contain a whitespace'
-		)
-		.trim(),
-	country: string().trim(),
+		),
+	country: z.string().trim(),
 });
 
-const reviewPayload = object({
+const reviewPayload = z.object({
 	userId: z.instanceof(Types.ObjectId),
-	albumId: string(),
-	score: number().gte(10).lte(100),
-	text: string().min(10).max(1000).optional(),
+	albumId: z.string(),
+	score: z.number().gte(10).lte(100),
+	text: z.string().min(10).max(1000).optional(),
 });
 
 export { userPayload, reviewPayload };

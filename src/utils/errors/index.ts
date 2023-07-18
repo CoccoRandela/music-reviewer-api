@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from 'express';
 import {
 	handleMongoServerError,
-	handleUnauthorized,
+	handleHttpError,
 	handleZodError,
 } from './handlers';
 
@@ -12,15 +12,14 @@ export const errorHandler: ErrorRequestHandler = (
 	next
 ): void => {
 	switch (err.name) {
-		case 'UnauthorizedError':
-			handleUnauthorized(err, req, res, next);
-			break;
 		case 'MongoServerError':
 			handleMongoServerError(err, req, res, next);
 			break;
 		case 'ZodError':
 			handleZodError(err, req, res, next);
 			break;
+		default:
+			handleHttpError(err, req, res, next);
 	}
 	console.log(err.name);
 };

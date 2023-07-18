@@ -8,7 +8,7 @@ const validateUserPayload = (
 	next: NextFunction
 ) => {
 	try {
-		userPayload.parse(req.body);
+		res.locals.userData = userPayload.parse(req.body);
 		next();
 	} catch (err) {
 		next(err);
@@ -39,8 +39,7 @@ const validateReviewPayload = (
 		text: req.body.text,
 	};
 	try {
-		reviewPayload.parse(reviewData);
-		res.locals.reviewData = reviewData;
+		res.locals.reviewData = reviewPayload.parse(reviewData);
 		next();
 	} catch (err) {
 		next(err);
