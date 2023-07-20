@@ -1,5 +1,5 @@
 import { IReview, Review } from '../models/review';
-import { AtLeastOnePropertyOf } from '../utils/types';
+import { AtLeastOnePropertyOf } from '../utils/types/AtLeastOne';
 import createHttpError from 'http-errors';
 import { NextFunction, Request, Response } from 'express';
 
